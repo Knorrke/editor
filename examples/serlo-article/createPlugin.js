@@ -2,6 +2,19 @@
  * Created by benny on 17.11.16.
  */
 
+const createPlugins = ({normalized, elements}) => {
+  const split = normalized.split(/(§\d+§)/).map((s) => s.trim()).filter((s) => s !== '')
+  return split.map((markdown) => {
+    var elementID = /§(\d+)§/.exec(markdown)
+    if (elementID !== null) {
+      return createPlugin(elements[elementID[1]])
+    } else {
+      return {
+        markdown: markdown
+      }
+    }
+  })
+}
 const createPlugin = (elem) => {
   switch (elem.name) {
     case 'spoiler':
@@ -14,11 +27,9 @@ const createPlugin = (elem) => {
             title: elem.title
           }
         },
-        rows: [{
-          cells: [{
-            markdown: elem.content
-          }]
-        }]
+        rows: createPlugins(elem.content).map((cell) => ({
+          cells: [cell]
+        }))
       }
     case 'injection':
       return {
@@ -39,6 +50,7 @@ const createPlugin = (elem) => {
             name: 'ory/editor/core/content/image'
           },
           state: {
+            alt: elem.alt,
             src: elem.url
           }
         }
@@ -46,4 +58,4 @@ const createPlugin = (elem) => {
   }
 }
 
-export default createPlugin
+export default createPlugins

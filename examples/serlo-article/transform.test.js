@@ -66,28 +66,20 @@ const cases = [
   }
 ]
 
-const transform = (input) => {
-  const transformed = input.rows.map((row) => {
-    return {
+const transform = (input) => ({
+  cells: [{
+    rows: input.rows.map((row) => ({
       cells: getCellsFromRow(row)
-    }
-  })
+    }))
+  }]
+})
 
-  return {
-    cells: [{
-      rows: transformed
-    }]
-  }
-}
-
-const getCellsFromRow = (row) => {
-  return row.map((cell) => {
-    return {
-      size: Math.floor(cell.col / 2),
-      raw: cell.content
-    }
+const getCellsFromRow = (row) => row.map((cell) => ({
+    size: Math.floor(cell.col / 2),
+    raw: cell.content
   })
-}
+)
+
 
 cases.forEach((testcase) => {
   describe('Transformes Serlo Layout to new Layout', () => {

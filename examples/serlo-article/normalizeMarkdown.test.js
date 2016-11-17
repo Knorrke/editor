@@ -5,57 +5,128 @@ import unexpected from "unexpected";
 
 const expect = unexpected.clone()
 
+const cases = [
+  {
+    description: 'Split spoilers',
+    input: 'Lorem \n/// title\nmarkdowntext\n///\n ipsum',
+    output: {
+      normalized: 'Lorem \n§0§\n ipsum',
+      elements: [{
+        name: 'spoiler',
+        title: 'title',
+        content: {
+          normalized: 'markdowntext',
+          elements: []
+        }
+      }]
+    }
+  }, {
+    description: 'split injections',
+    input: 'Lorem \n>[alttext](url)\n ipsum',
+    output: {
+      normalized: 'Lorem \n§0§\n ipsum',
+      elements: [{
+        name: 'injection',
+        alt: 'alttext',
+        url: 'url'
+      }]
+    }
+  }, {
+    description: 'split images',
+    input: 'Lorem ![image](url) ipsum',
+    output: {
+      normalized: 'Lorem §0§ ipsum',
+      elements: [{
+        name: 'image',
+        alt: 'image',
+        url: 'url'
+      }]
+    }
+  }, {
+    description: 'split images in spoilers',
+    input: '/// title\nmarkdowntext with image ![image](url)\n///',
+    output: {
+      normalized: '§0§',
+      elements: [{
+        name: 'spoiler',
+        title: 'title',
+        content: {
+          normalized: 'markdowntext with image §0§',
+          elements: [{
+            name: 'image',
+            alt: 'image',
+            url: 'url'
+          }]
+        }
+      }]
+    }
+  }
+]
 const normalizeMarkdown = (markdown) => {
-  const spoilerRegEx = new RegExp(/^\/\/\/ (.*)\n([\s\S]*?)(\n|\r)+\/\/\//gm),
-    injectionRegEx = new RegExp(/>\[(.*)\]\((.*)\)/g),
-    imagesRegEx = new RegExp(/!\[(.*?)\]\((.*?)\)/g),
-    elements = []
-  var normalized = markdown,
-    index = 0
+  var normalizedObj = {
+      normalized: markdown,
+      elements: []
+  }
+  normalizedObj = extractSpoilers(normalizedObj)
+  normalizedObj = extractInjections(normalizedObj)
+  normalizedObj = extractImages(normalizedObj)
 
-  //Spoilers
+  return normalizedObj
+}
+
+const extractSpoilers = ({normalized,elements}) => {
+  const spoilerRegEx = new RegExp(/^\/\/\/ (.*)\n([\s\S]*?)(\n|\r)+\/\/\//gm)
+
   var match = spoilerRegEx.exec(normalized)
   while (match !== null) {
+    normalized = normalized.replace(spoilerRegEx, '§' + elements.length + '§')
     elements.push({
       name: 'spoiler',
       title: match[1],
-      content: match[2]
+      content: normalizeMarkdown(match[2])
     })
 
-    normalized = normalized.replace(spoilerRegEx, '§' + index + '§')
-
-    index++
     match = spoilerRegEx.exec(normalized)
   }
+  return {
+    normalized: normalized,
+    elements: elements
+  }
+}
 
-  //Injections
-  match = injectionRegEx.exec(normalized)
+const extractInjections = ({normalized,elements}) => {
+  const injectionRegEx = new RegExp(/>\[(.*)\]\((.*)\)/g)
+  var match = injectionRegEx.exec(normalized)
   while (match !== null) {
+    normalized = normalized.replace(injectionRegEx, '§' + elements.length + '§')
     elements.push({
       name: 'injection',
       alt: match[1],
       url: match[2]
     })
 
-    normalized = normalized.replace(injectionRegEx, '§' + index + '§')
-    index++
     match = injectionRegEx.exec(normalized)
   }
+  return {
+    normalized: normalized,
+    elements: elements
+  }
+}
 
-  //Images
-  match = imagesRegEx.exec(normalized)
+const extractImages = ({normalized, elements}) => {
+  const imagesRegEx = new RegExp(/!\[(.*?)\]\((.*?)\)/g)
+
+  var match = imagesRegEx.exec(normalized)
   while (match !== null) {
+    normalized = normalized.replace(imagesRegEx, '§' + elements.length + '§')
     elements.push({
       name: 'image',
       alt: match[1],
       url: match[2]
     })
 
-    normalized = normalized.replace(imagesRegEx, '§' + index + '§')
-    index++
     match = imagesRegEx.exec(normalized)
   }
-
   return {
     normalized: normalized,
     elements: elements
@@ -64,30 +135,10 @@ const normalizeMarkdown = (markdown) => {
 
 export default normalizeMarkdown
 
-describe('normalize markdown', () => {
-  it('should split spoilers correctly', () => {
-    expect(normalizeMarkdown('Lorem \n/// title\nmarkdowntext\n///\n ipsum'), 'to equal',
-      {
-        normalized: 'Lorem \n§0§\n ipsum',
-        elements: [{
-          name: 'spoiler',
-          title: 'title',
-          content: 'markdowntext'
-        }]
-      }
-    )
-  })
-
-  it('should split injections correcctly', () => {
-    expect(normalizeMarkdown('Lorem \n>[alttext](url)\n ipsum'), 'to equal',
-      {
-        normalized: 'Lorem \n§0§\n ipsum',
-        elements: [{
-          name: 'injection',
-          alt: 'alttext',
-          url: 'url'
-        }]
-      }
-    )
+cases.forEach((testcase) => {
+  describe('Transformes Serlo Layout to new Layout', () => {
+    it(testcase.description, () => {
+      expect(normalizeMarkdown(testcase.input), 'to equal', testcase.output)
+    })
   })
 })
