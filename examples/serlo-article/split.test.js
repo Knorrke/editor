@@ -1,7 +1,7 @@
 /* eslint-env jest */
 import unexpected from "unexpected";
 import normalizeMarkdown from "./normalizeMarkdown.test"
-import createPlugin from "./createPlugin"
+import createPlugins from "./createPlugin"
 
 const expect = unexpected.clone()
 
@@ -63,7 +63,43 @@ const cases = [
                     name: 'ory/editor/core/content/image'
                   },
                   state: {
+                    alt: 'image',
                     src: 'url'
+                  }
+                }
+              }, {
+                markdown: 'ipsum'
+              }]
+            }]
+          }]
+        }]
+      }]
+    }
+  }, {
+    description: 'Layout with injection',
+    input: {
+      cells: [{
+        rows: [{
+          cells: [{size: 12, raw: 'Lorem \n>[alttext](url)\n ipsum'}]
+        }]
+      }]
+    },
+    output: {
+      cells: [{
+        rows: [{
+          cells: [{
+            size: 12,
+            rows: [{
+              cells: [{
+                markdown: 'Lorem'
+              }, {
+                content: {
+                  plugin: {
+                    name: 'serlo/content/injection'
+                  },
+                  state: {
+                    alt: 'alttext',
+                    url: 'url'
                   }
                 }
               }, {
@@ -113,11 +149,11 @@ const cases = [
       }]
     }
   }, {
-    description: 'Layout with injection',
+    description: 'Layout with image in spoiler',
     input: {
       cells: [{
         rows: [{
-          cells: [{size: 12, raw: 'Lorem \n>[alttext](url)\n ipsum'}]
+          cells: [{size: 12, raw: '/// title\nmarkdowntext with image ![image](url)\n///'}]
         }]
       }]
     },
@@ -128,19 +164,30 @@ const cases = [
             size: 12,
             rows: [{
               cells: [{
-                markdown: 'Lorem'
-              }, {
-                content: {
+                layout: {
                   plugin: {
-                    name: 'serlo/content/injection'
+                    name: 'ory/editor/core/layout/spoiler'
                   },
                   state: {
-                    alt: 'alttext',
-                    url: 'url'
+                    title: 'title'
                   }
-                }
-              }, {
-                markdown: 'ipsum'
+                }, rows: [{
+                  cells: [{
+                    markdown: 'markdowntext with image'
+                  }]
+                }, {
+                  cells: [{
+                    content: {
+                      plugin: {
+                        name: 'ory/editor/core/content/image'
+                      },
+                      state: {
+                        alt: 'image',
+                        src: 'url'
+                      }
+                    }
+                  }]
+                }]
               }]
             }]
           }]
@@ -150,31 +197,16 @@ const cases = [
   }
 ]
 
-const split = (input) => {
-  return {
-    cells: input.cells.map((cell) => splitCell(cell))
-  }
-}
+const split = (input) => ({
+  cells: input.cells.map((cell) => splitCell(cell))
+})
 
 const splitCell = (cell) => {
   if (cell.raw !== undefined) {
-    const split = splitMarkdown(cell.raw)
-
-    const cells = split.splittedMarkdown.map((markdown) => {
-      var match = /§(\d+)§/.exec(markdown)
-      if (match !== null) {
-        return createPlugin(split.elements[match[1]])
-      } else {
-        return {
-          markdown: markdown
-        }
-      }
-    })
-
     return {
       size: cell.size,
       rows: [{
-        cells: cells
+        cells: splitMarkdown(cell.raw)
       }]
     }
   } else {
@@ -185,21 +217,13 @@ const splitCell = (cell) => {
   }
 }
 
-const splitRow = (row) => {
-  return {
-    cells: row.cells.map((cell) => splitCell(cell))
-  }
-}
+const splitRow = (row) => ({
+  cells: row.cells.map((cell) => splitCell(cell))
+})
 
-const splitMarkdown = (markdown) => {
-  const normalized = normalizeMarkdown(markdown),
-    split = normalized.normalized.split(/(§\d+?§)/)
+const splitMarkdown = (markdown) => createPlugins(normalizeMarkdown(markdown))
 
-  return {
-    splittedMarkdown: split.map((elem) => elem.trim()),
-    elements: normalized.elements
-  }
-}
+export default splitMarkdown
 
 cases.forEach((testcase) => {
   describe('Transformes Serlo Layout to new Layout', () => {
