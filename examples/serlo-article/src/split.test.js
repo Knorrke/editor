@@ -198,11 +198,12 @@ const cases = [
 ]
 
 const split = (input) => ({
-  cells: input.cells.map((cell) => splitCell(cell))
+  ...input,
+  cells: input.cells.map(splitCell)
 })
 
 const splitCell = (cell) => {
-  if (cell.raw !== undefined) {
+  if (cell.raw) {
     return {
       size: cell.size,
       rows: [{
@@ -210,20 +211,22 @@ const splitCell = (cell) => {
       }]
     }
   } else {
+    const {rows = []} = cell
     return {
-      size: cell.size,
-      rows: cell.rows.map((row) => splitRow(row))
+      ...cell,
+      rows: rows.map(splitRow)
     }
   }
 }
 
 const splitRow = (row) => ({
-  cells: row.cells.map((cell) => splitCell(cell))
+  ...row,
+  cells: row.cells.map(splitCell)
 })
 
 const splitMarkdown = (markdown) => createPlugins(normalizeMarkdown(markdown))
 
-export default splitMarkdown
+export default split
 
 cases.forEach((testcase) => {
   describe('Transformes Serlo Layout to new Layout', () => {
