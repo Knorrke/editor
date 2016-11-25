@@ -7,15 +7,19 @@ const createPlugins = ({normalized, elements}) => {
   return split.map((markdown) => {
     var elementID = /§(\d+)§/.exec(markdown)
     if (elementID !== null) {
-      return createPlugin(elements[elementID[1]])
+      return {
+        cells: [createPluginCell(elements[elementID[1]])]
+      }
     } else {
       return {
-        markdown: markdown
+        cells: [{
+          markdown: markdown
+        }]
       }
     }
   })
 }
-const createPlugin = (elem) => {
+const createPluginCell = (elem) => {
   switch (elem.name) {
     case 'spoiler':
       return {
@@ -27,9 +31,7 @@ const createPlugin = (elem) => {
             title: elem.title
           }
         },
-        rows: createPlugins(elem.content).map((cell) => ({
-          cells: [cell]
-        }))
+        rows: createPlugins(elem.content)
       }
     case 'injection':
       return {

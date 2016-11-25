@@ -56,7 +56,9 @@ const cases = [
             rows: [{
               cells: [{
                 markdown: 'Lorem'
-              }, {
+              }]
+            }, {
+              cells: [{
                 content: {
                   plugin: {
                     name: 'ory/editor/core/content/image'
@@ -66,7 +68,9 @@ const cases = [
                     src: 'url'
                   }
                 }
-              }, {
+              }]
+            }, {
+              cells: [{
                 markdown: 'ipsum'
               }]
             }]
@@ -91,7 +95,9 @@ const cases = [
             rows: [{
               cells: [{
                 markdown: 'Lorem'
-              }, {
+              }]
+            }, {
+              cells: [{
                 content: {
                   plugin: {
                     name: 'serlo/content/injection'
@@ -101,7 +107,9 @@ const cases = [
                     url: 'url'
                   }
                 }
-              }, {
+              }]
+            }, {
+              cells: [{
                 markdown: 'ipsum'
               }]
             }]
@@ -126,7 +134,9 @@ const cases = [
             rows: [{
               cells: [{
                 markdown: 'Lorem'
-              }, {
+              }]
+            }, {
+              cells: [{
                 layout: {
                   plugin: {
                     name: 'ory/editor/core/layout/spoiler'
@@ -139,7 +149,9 @@ const cases = [
                     markdown: 'markdowntext'
                   }]
                 }]
-              }, {
+              }]
+            }, {
+              cells: [{
                 markdown: 'ipsum'
               }]
             }]

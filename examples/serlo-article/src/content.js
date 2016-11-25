@@ -11,6 +11,5 @@ const content = {
   id: '1',
   ...cells
 }
-console.log(content)
 
 export default content

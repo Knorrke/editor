@@ -13,9 +13,7 @@ const splitCell = (cell) => {
   if (cell.raw) {
     return {
       size: cell.size,
-      rows: [{
-        cells: splitMarkdown(cell.raw)
-      }]
+      rows: splitMarkdown(cell.raw)
     }
   } else {
     const {rows = []} = cell
