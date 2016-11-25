@@ -1,7 +1,6 @@
 /* eslint-env jest */
 import unexpected from "unexpected";
-import normalizeMarkdown from "./normalizeMarkdown.test"
-import createPlugins from "./createPlugin"
+import split from "../split";
 
 const expect = unexpected.clone()
 
@@ -196,37 +195,6 @@ const cases = [
     }
   }
 ]
-
-const split = (input) => ({
-  ...input,
-  cells: input.cells.map(splitCell)
-})
-
-const splitCell = (cell) => {
-  if (cell.raw) {
-    return {
-      size: cell.size,
-      rows: [{
-        cells: splitMarkdown(cell.raw)
-      }]
-    }
-  } else {
-    const {rows = []} = cell
-    return {
-      ...cell,
-      rows: rows.map(splitRow)
-    }
-  }
-}
-
-const splitRow = (row) => ({
-  ...row,
-  cells: row.cells.map(splitCell)
-})
-
-const splitMarkdown = (markdown) => createPlugins(normalizeMarkdown(markdown))
-
-export default split
 
 cases.forEach((testcase) => {
   describe('Transformes Serlo Layout to new Layout', () => {

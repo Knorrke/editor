@@ -2,7 +2,7 @@
  * Created by benny on 24.11.16.
  */
 import unexpected from "unexpected";
-import renderMarkdown from "./markdownToHtml.test";
+import markdownToSlate from "../markdownToSlate";
 
 const expect = unexpected.clone()
 
@@ -105,39 +105,6 @@ const cases = [
     }
   }
 ]
-
-const markdownToSlate = (input) => ({
-  ...input,
-  cells: input.cells.map(renderCell)
-})
-
-const renderCell = (cell) => {
-  const {rows = []} = cell
-
-  if (cell.markdown) {
-    return {
-      content: {
-        plugin: {name: 'ory/editor/core/content/slate'},
-        state: {
-          importFromHtml: renderMarkdown(cell.markdown)
-        }
-      }
-    }
-  } else if (rows.length > 0) {
-    return {
-      ...cell,
-      rows: rows.map(renderRow)
-    }
-  }
-  return cell
-}
-
-const renderRow = (row) => ({
-  ...row,
-  cells: row.cells.map(renderCell)
-})
-
-export default markdownToSlate
 
 cases.forEach((testcase) => {
   describe('Transformes Serlo Layout to new Layout', () => {

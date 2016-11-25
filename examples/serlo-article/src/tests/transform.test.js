@@ -1,20 +1,17 @@
 /* eslint-env jest */
 import unexpected from "unexpected";
+import transform from "../transform";
 
 const expect = unexpected.clone()
 
 const cases = [
   {
     description: 'Simple Layout',
-    input: {
-      rows: [
-        [{
-          "col": 24, "content": "Lorem ipsum"
-        }], [{
-          "col": 24, "content": "dolor sit amet."
-        }]
-      ]
-    },
+    input: [[{
+      "col": 24, "content": "Lorem ipsum"
+    }], [{
+      "col": 24, "content": "dolor sit amet."
+    }]],
     output: {
       cells: [{
         rows: [{
@@ -27,15 +24,12 @@ const cases = [
   },
   {
     description: 'Two-column layout',
-    input: {
-      rows: [
-        [{
-          "col": 12, "content": "Lorem ipsum"
-        }, {
-          "col": 12, "content": "dolor adipiscing amet"
-        }]
-      ]
-    },
+    input: [[{
+      "col": 12, "content": "Lorem ipsum"
+    }, {
+      "col": 12, "content": "dolor adipiscing amet"
+    }]]
+    ,
     output: {
       cells: [{
         rows: [{
@@ -46,15 +40,13 @@ const cases = [
     }
   }, {
     description: 'Two-column layout with odd column size',
-    input: {
-      rows: [
-        [{
-          "col": 5, "content": "Lorem ipsum"
-        }, {
-          "col": 19, "content": "dolor adipiscing amet"
-        }]
-      ]
-    },
+    input: [
+      [{
+        "col": 5, "content": "Lorem ipsum"
+      }, {
+        "col": 19, "content": "dolor adipiscing amet"
+      }]
+    ],
     output: {
       cells: [{
         rows: [{
@@ -65,21 +57,6 @@ const cases = [
     }
   }
 ]
-
-const transform = (input) => ({
-  cells: [{
-    rows: input.rows.map((row) => ({
-      cells: getCellsFromRow(row)
-    }))
-  }]
-})
-
-const getCellsFromRow = (row) => row.map((cell) => ({
-    size: Math.floor(cell.col / 2),
-    raw: cell.content
-  })
-)
-
 
 cases.forEach((testcase) => {
   describe('Transformes Serlo Layout to new Layout', () => {

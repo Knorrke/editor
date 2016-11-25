@@ -33,6 +33,7 @@
     "dev:home": "cross-env NODE_PATH=. node examples/home/server.js",
     "dev:news-article": "cross-env NODE_PATH=. node examples/news-article/server.js",
     "dev:single-page-site": "cross-env NODE_PATH=. node examples/single-page-site/server.js",
+    "dev:serlo-article": "cross-env NODE_PATH=. node examples/serlo-article/server.js",
     "build:home": "cross-env NODE_PATH=. node examples/home/build.js",
     "build:news-article": "cross-env NODE_PATH=. node examples/news-article/build.js",
     "build:single-page-site": "cross-env NODE_PATH=. node examples/single-page-site/build.js",
