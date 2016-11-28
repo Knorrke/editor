@@ -12,4 +12,6 @@ const content = {
   ...cells
 }
 
+console.log(markdownToSlate(split(transform(contentSerlo))))
+
 export default content

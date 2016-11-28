@@ -10,36 +10,132 @@ import tail from 'ramda/src/tail'
 import React from 'react'
 import type { Props } from './Component'
 
-import { H1, H2, H3 } from './plugins/headings'
+import { H1, H2, H3, H4, H5, H6 } from './plugins/headings'
 import { P } from './plugins/paragraph'
+import { A } from './plugins/link'
+import { OL, UL, LI } from './plugins/lists'
+import { STRONG, EM } from './plugins/emphasize'
+import { CODE } from './plugins/code'
+import { BLOCKQUOTE } from './plugins/blockquote'
+import { KATEX_BLOCK, KATEX_INLINE } from './plugins/katex'
 
 // FIXME #126
 // flow-disable-next-line named exports
 import { Document, Html, Raw, State, Plain } from 'slate'
 
 const rules = [{
-  deserialize: (el: any) => el.tagName === 'p' ? {
+  deserialize: (el: any) => {
+    console.log(el)
+    return null
+  }
+}, {
+  deserialize: (el: any, next) => el.tagName === 'p' ? {
     kind: 'block',
     type: P,
-    nodes: [{ kind: 'text', ranges: [{ text: el.children[0].data }] }]
+    nodes: next(el.children)
   } : null
 }, {
   deserialize: (el: any) => el.tagName === 'h1' ? {
     kind: 'block',
     type: H1,
-    nodes: [{ kind: 'text', ranges: [{ text: el.children[0].data }] }]
+    nodes: [{kind: 'text', ranges: [{text: el.children[0].data}]}]
   } : null
 }, {
   deserialize: (el: any) => el.tagName === 'h2' ? {
     kind: 'block',
     type: H2,
-    nodes: [{ kind: 'text', ranges: [{ text: el.children[0].data }] }]
+    nodes: [{kind: 'text', ranges: [{text: el.children[0].data}]}]
   } : null
 }, {
   deserialize: (el: any) => el.tagName === 'h3' ? {
     kind: 'block',
     type: H3,
-    nodes: [{ kind: 'text', ranges: [{ text: el.children[0].data }] }]
+    nodes: [{kind: 'text', ranges: [{text: el.children[0].data}]}]
+  } : null
+}, {
+  deserialize: (el: any) => el.tagName === 'h4' ? {
+    kind: 'block',
+    type: H4,
+    nodes: [{kind: 'text', ranges: [{text: el.children[0].data}]}]
+  } : null
+}, {
+  deserialize: (el: any) => el.tagName === 'h5' ? {
+    kind: 'block',
+    type: H5,
+    nodes: [{kind: 'text', ranges: [{text: el.children[0].data}]}]
+  } : null
+}, {
+  deserialize: (el: any) => el.tagName === 'h6' ? {
+    kind: 'block',
+    type: H6,
+    nodes: [{kind: 'text', ranges: [{text: el.children[0].data}]}]
+  } : null
+}, {
+  deserialize: (el: any) => el.tagName === 'a' ? {
+    kind: 'inline',
+    type: A,
+    data: {href: el.attribs.href},
+    nodes: [{kind: 'text', ranges: [{text: el.children[0].data}]}]
+  } : null
+}, {
+  deserialize: (el: any, next) => el.tagName === 'ul' ? {
+    kind: 'block',
+    type: UL,
+    nodes: next(el.children.filter((child) => child.tagName === 'li'))
+  } : null
+}, {
+  deserialize: (el: any, next) => el.tagName === 'ol' ? {
+    kind: 'block',
+    type: OL,
+    nodes: next(el.children.filter((child) => child.tagName === 'li'))
+  } : null
+}, {
+  deserialize: (el: any, next) => el.tagName === 'li' ? {
+    kind: 'block',
+    type: LI,
+    nodes: next(el.children)
+  } : null
+}, {
+  deserialize: (el: any, next) => el.tagName === 'strong' ? {
+    kind: 'mark',
+    type: STRONG,
+    nodes: next(el.children)
+  } : null
+}, {
+  deserialize: (el: any, next) => el.tagName === 'em' ? {
+    kind: 'mark',
+    type: EM,
+    nodes: next(el.children)
+  } : null
+}, {
+  deserialize: (el: any, next) => el.tagName === 'code' ? {
+    kind: 'mark',
+    type: CODE,
+    nodes: next(el.children)
+  } : null
+}, {
+  deserialize: (el: any, next) => el.tagName === 'blockquote' ? {
+    kind: 'block',
+    type: BLOCKQUOTE,
+    nodes: next(el.children)
+  } : null
+}, {
+  deserialize: (el: any, next) => el.tagName === 'katexblock' ? {
+    kind: 'block',
+    type: KATEX_BLOCK,
+    isVoid: true,
+    data: {
+      formula: el.children[0].data
+    }
+  } : null
+}, {
+  deserialize: (el: any, next) => el.tagName === 'katexinline' ? {
+    kind: 'inline',
+    type: KATEX_INLINE,
+    isVoid: true,
+    data: {
+      formula: el.children[0].data
+    }
   } : null
 }, {
   serialize: (el: any, children: any) => el.type === H1

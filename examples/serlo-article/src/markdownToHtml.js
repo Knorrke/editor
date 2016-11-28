@@ -6,6 +6,7 @@ import showdown from "showdown";
 
 const renderMarkdown = (input) => {
   const converter = new showdown.Converter()
-  return converter.makeHtml(input)
+  const html = converter.makeHtml(input)
+  return html.replace(/%%(.*?)%%/gm, '<katexinline>$1</katexinline>').replace(/\$\$(.*?)\$\$/gm, '<katexblock>$1</katexblock>')
 }
 export default renderMarkdown
