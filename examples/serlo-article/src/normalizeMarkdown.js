@@ -19,11 +19,12 @@ const extractSpoilers = ({normalized,elements}) => {
   var match = spoilerRegEx.exec(normalized)
   while (match !== null) {
     normalized = normalized.replace(spoilerRegEx, '§' + elements.length + '§')
-    elements.push({
+
+    elements = [...elements, {
       name: 'spoiler',
       title: match[1],
       content: normalizeMarkdown(match[2])
-    })
+    }]
 
     match = spoilerRegEx.exec(normalized)
   }
@@ -38,11 +39,11 @@ const extractInjections = ({normalized,elements}) => {
   var match = injectionRegEx.exec(normalized)
   while (match !== null) {
     normalized = normalized.replace(injectionRegEx, '§' + elements.length + '§')
-    elements.push({
+    elements = [...elements, {
       name: 'injection',
       alt: match[1],
       url: match[2]
-    })
+    }]
 
     match = injectionRegEx.exec(normalized)
   }
@@ -57,11 +58,11 @@ const extractImages = ({normalized, elements}) => {
   var match = imagesRegEx.exec(normalized)
   while (match !== null) {
     normalized = normalized.replace(imagesRegEx, '§' + elements.length + '§')
-    elements.push({
+    elements = [...elements, {
       name: 'image',
       alt: match[1],
       url: match[2]
-    })
+    }]
 
     match = imagesRegEx.exec(normalized)
   }
