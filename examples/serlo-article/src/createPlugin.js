@@ -5,7 +5,9 @@
 const createPlugins = ({normalized, elements}) => {
   const split = normalized.split(/(§\d+§)/).map((s) => s.trim()).filter((s) => s !== '')
   return split.map((markdown) => {
+    //console.log(markdown)
     var elementID = /§(\d+)§/.exec(markdown)
+    //console.log(elementID)
     if (elementID !== null) {
       return {
         cells: [createPluginCell(elements[elementID[1]])]

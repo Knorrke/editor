@@ -60,6 +60,21 @@ const cases = [
         }
       }]
     }
+  }, {
+    description: 'split multiple elements',
+    input: 'some markdown text with image\n![image](url)\n some more markdown\n![image2](url2)',
+    output: {
+      normalized: 'some markdown text with image\n§0§\n some more markdown\n§1§',
+      elements: [{
+        name: 'image',
+        alt: 'image',
+        url: 'url'
+      },{
+        name: 'image',
+        alt: 'image2',
+        url: 'url2'
+      }]
+    }
   }
 ]
 

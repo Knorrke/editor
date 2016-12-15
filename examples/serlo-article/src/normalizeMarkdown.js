@@ -14,7 +14,7 @@ const normalizeMarkdown = (markdown) => {
 }
 
 const extractSpoilers = ({normalized,elements}) => {
-  const spoilerRegEx = new RegExp(/^\/\/\/ (.*)\n([\s\S]*?)(\n|\r)+\/\/\//gm)
+  const spoilerRegEx = new RegExp(/^\/\/\/ (.*)\n([\s\S]*?)(\n|\r)+\/\/\//m)
 
   var match = spoilerRegEx.exec(normalized)
   while (match !== null) {
@@ -34,7 +34,7 @@ const extractSpoilers = ({normalized,elements}) => {
 }
 
 const extractInjections = ({normalized,elements}) => {
-  const injectionRegEx = new RegExp(/>\[(.*)\]\((.*)\)/g)
+  const injectionRegEx = new RegExp(/>\[(.*)\]\((.*)\)/)
   var match = injectionRegEx.exec(normalized)
   while (match !== null) {
     normalized = normalized.replace(injectionRegEx, '§' + elements.length + '§')
@@ -53,8 +53,7 @@ const extractInjections = ({normalized,elements}) => {
 }
 
 const extractImages = ({normalized, elements}) => {
-  const imagesRegEx = new RegExp(/!\[(.*?)\]\((.*?)\)/g)
-
+  const imagesRegEx = new RegExp(/!\[(.*?)\]\((.*?)\)/)
   var match = imagesRegEx.exec(normalized)
   while (match !== null) {
     normalized = normalized.replace(imagesRegEx, '§' + elements.length + '§')

@@ -1,18 +1,17 @@
-/**
- * Created by benny on 17.11.16.
- */
 // @flow
 import React from 'react'
+import cssModules from 'react-css-modules'
+import styles from './index.scoped.css'
+import Display from './Display'
+import Form from './Form'
+import type { ContentPluginProps } from 'src/editor/service/plugin/classes'
 
+export type PropTypes = ContentPluginProps<{ url: string, alt: string }>
 
-export type PropTypes = {
-  state: { url: string, alt: string }
-}
-
-const Injection = (props: PropTypes) => (
-  <div>
-    this is a placeholder for a real injection...
-  </div>
+const Injection = (props: PropTypes) => props.readOnly ? (
+  <Display {...props} />
+) : (
+  <Form {...props} />
 )
 
-export default Injection
+export default cssModules(Injection, styles, { allowMultiple: true })
