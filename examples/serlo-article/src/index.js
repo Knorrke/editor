@@ -1,5 +1,6 @@
 import { PluginService, defaultLayoutPlugins, defaultContentPlugins } from 'src/editor/service'
 import InjectionPlugin from './plugins/injection'
+import Geogebra from './plugins/geogebra'
 import React from 'react'
 import ReactDOM from 'react-dom'
 import Editor, { Editable, Controls } from 'src/editor'
@@ -10,7 +11,8 @@ require('react-tap-event-plugin')()
 const editor = new Editor({
   plugins: new PluginService([
     ...defaultContentPlugins,
-    InjectionPlugin
+    InjectionPlugin,
+    Geogebra
   ], defaultLayoutPlugins)
 })
 

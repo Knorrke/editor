@@ -31,7 +31,7 @@ const contentSerlo =
     "content": "## Konstruktionsbeispiele\n\nKonstruiere ein Dreieck mit den Seitenlängen %%a=3\\;cm;\\;\\;\\;b=\\;4\\;cm;\\;\\;c=\\;5\\;cm\\;%%\n\n1. Zeichne eine Gerade und wähle darauf den Punkt A des Dreiecks aus.\n\n2. Zeichne einen Kreis um A, dessen Radius genauso groß ist wie die Seite c.\n\n3. Der Schnittpunkt der Geraden und des Kreises ist der Eckpunkt B.\n\n4. Zeichne einen Kreis um B, dessen Radius so groß ist wie die Seite a.\n\n5. Zeichne einen Kreis um A, dessen Radius so groß ist wie die Seite b.\n\n6. Der Schnittpunkt der beiden Kreise ist der Punkt C des Dreiecks.\n\n\n\n>[Dreiecke konstruieren](ggt/1571395)"
   }], [{
     "col": 24,
-    "content": "/// Weitere Beispielaufgaben\n>[Übungsaufgabe1](/9833)\n>[Übungsaufgabe2](/9887)\n///"
+    "content": "/// Weitere Beispielaufgaben\n>[Übungsaufgabe1](/1)\n>[Übungsaufgabe2](/2)\n///"
   }]
   ]
 

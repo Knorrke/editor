@@ -22,8 +22,8 @@ const Form = (props: PropTypes) => (
     <Display {...props} />
     <BottomToolbar open={props.focused}>
       <TextField
-        hintText="/12345"
-        floatingLabelText="Injection Element"
+        hintText="12345"
+        floatingLabelText="Geogebra Element"
         inputStyle={{ color: 'white' }}
         floatingLabelStyle={{ color: 'white' }}
         hintStyle={{ color: 'grey' }}

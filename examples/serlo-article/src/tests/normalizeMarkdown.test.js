@@ -28,7 +28,7 @@ const cases = [
       elements: [{
         name: 'injection',
         alt: 'alttext',
-        url: 'url'
+        src: 'url'
       }]
     }
   }, {
@@ -39,7 +39,7 @@ const cases = [
       elements: [{
         name: 'image',
         alt: 'image',
-        url: 'url'
+        src: 'url'
       }]
     }
   }, {
@@ -55,7 +55,7 @@ const cases = [
           elements: [{
             name: 'image',
             alt: 'image',
-            url: 'url'
+            src: 'url'
           }]
         }
       }]
@@ -68,11 +68,22 @@ const cases = [
       elements: [{
         name: 'image',
         alt: 'image',
-        url: 'url'
+        src: 'url'
       },{
         name: 'image',
         alt: 'image2',
-        url: 'url2'
+        src: 'url2'
+      }]
+    }
+  }, {
+    description: 'split geogebra injection',
+    input: 'Lorem \n>[alttext](ggt/url)\n ipsum',
+    output: {
+      normalized: 'Lorem \n§0§\n ipsum',
+      elements: [{
+        name: 'geogebra',
+        alt: 'alttext',
+        src: 'url'
       }]
     }
   }

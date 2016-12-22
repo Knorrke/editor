@@ -43,7 +43,19 @@ const createPluginCell = (elem) => {
           },
           state: {
             alt: elem.alt,
-            url: elem.url
+            src: elem.src
+          }
+        }
+      }
+    case 'geogebra':
+      return {
+        content: {
+          plugin: {
+            name: 'serlo/content/geogebra'
+          },
+          state: {
+            alt: elem.alt,
+            src: elem.src
           }
         }
       }
@@ -55,7 +67,7 @@ const createPluginCell = (elem) => {
           },
           state: {
             alt: elem.alt,
-            src: elem.url
+            src: elem.src
           }
         }
       }

@@ -8,6 +8,7 @@ const normalizeMarkdown = (markdown) => {
   }
   normalizedObj = extractSpoilers(normalizedObj)
   normalizedObj = extractInjections(normalizedObj)
+  normalizedObj = extractGeogebra(normalizedObj)
   normalizedObj = extractImages(normalizedObj)
 
   return normalizedObj
@@ -35,18 +36,38 @@ const extractSpoilers = ({normalized,elements}) => {
 }
 
 const extractInjections = ({normalized,elements}) => {
-  const injectionRegEx = new RegExp(/>\[(.*)\]\((.*)\)/)
+  const injectionRegEx = new RegExp(/>\[(.*)\]\(((?!ggt\/).*)\)/)
   var match = injectionRegEx.exec(normalized)
   while (match !== null) {
     normalized = normalized.replace(injectionRegEx, '§' + elements.length + '§')
     elements = [...elements, {
       name: 'injection',
       alt: match[1],
-      url: match[2]
+      src: match[2]
     }]
 
     match = injectionRegEx.exec(normalized)
   }
+  return {
+    normalized: normalized,
+    elements: elements
+  }
+}
+
+const extractGeogebra = ({normalized, elements}) => {
+  const geogebraInjectionRegEx = new RegExp(/>\[(.*)\]\(ggt\/(.*)\)/)
+  var match = geogebraInjectionRegEx.exec(normalized)
+  while (match !== null) {
+    normalized = normalized.replace(geogebraInjectionRegEx, '§' + elements.length + '§')
+    elements = [...elements, {
+      name: 'geogebra',
+      alt: match[1],
+      src: match[2]
+    }]
+
+    match = geogebraInjectionRegEx.exec(normalized)
+  }
+
   return {
     normalized: normalized,
     elements: elements
@@ -61,7 +82,7 @@ const extractImages = ({normalized, elements}) => {
     elements = [...elements, {
       name: 'image',
       alt: match[1],
-      url: match[2]
+      src: match[2]
     }]
 
     match = imagesRegEx.exec(normalized)

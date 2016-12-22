@@ -104,7 +104,7 @@ const cases = [
                   },
                   state: {
                     alt: 'alttext',
-                    url: 'url'
+                    src: 'url'
                   }
                 }
               }]
@@ -199,6 +199,45 @@ const cases = [
                     }
                   }]
                 }]
+              }]
+            }]
+          }]
+        }]
+      }]
+    }
+  }, {
+    description: 'Layout with geogebra injection',
+    input: {
+      cells: [{
+        rows: [{
+          cells: [{size: 12, raw: 'Lorem \n>[alttext](ggt/url)\n ipsum'}]
+        }]
+      }]
+    },
+    output: {
+      cells: [{
+        rows: [{
+          cells: [{
+            size: 12,
+            rows: [{
+              cells: [{
+                markdown: 'Lorem'
+              }]
+            }, {
+              cells: [{
+                content: {
+                  plugin: {
+                    name: 'serlo/content/geogebra'
+                  },
+                  state: {
+                    alt: 'alttext',
+                    src: 'url'
+                  }
+                }
+              }]
+            }, {
+              cells: [{
+                markdown: 'ipsum'
               }]
             }]
           }]

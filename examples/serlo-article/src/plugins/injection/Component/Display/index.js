@@ -5,13 +5,10 @@
 import React, {Component} from 'react'
 import debounce from 'lodash.debounce'
 import request from 'superagent'
-import responses from '../../../../9833.json.js'
+import responses from '../../../../injection-responses.json.js'
 import ImageIcon from 'material-ui/svg-icons/image/panorama'
 import { isProduction } from 'src/editor/const'
-
-export type PropTypes = {
-  state: { url: string, alt: string }
-}
+import type { PropTypes } from '../index.js'
 
 class Display extends Component {
   constructor(props: PropTypes) {
@@ -26,14 +23,14 @@ class Display extends Component {
   props:PropTypes
 
   componentDidMount() {
-    if (!this.state.loaded && this.props.state.url) {
+    if (!this.state.loaded && this.props.state.src) {
       this.createRequest(this.props.state)
     }
   }
 
-  createRequest = ({url, alt}) => {
-    request.get(url).end((err, res) => {
-      if (err) {
+  createRequest = ({src, alt}) => {
+    request.get(src).end((err, res) => {
+      if (err || !res.ok) {
         this.setState({
           loaded: <div styleName="injection">{alt}</div>
         })
@@ -42,7 +39,7 @@ class Display extends Component {
           this.setState({loaded: res.text})
         } else {
           responses.forEach(({id, response}) => {
-            if ("/" + id === url) {
+            if ("/" + id === src) {
               this.setState({loaded: response})
             }
           })
@@ -53,7 +50,7 @@ class Display extends Component {
   }
 
   componentWillReceiveProps(nextProps:PropTypes) {
-    if (this.props.state.url !== nextProps.state.url) {
+    if (this.props.state.src !== nextProps.state.src) {
       this.createRequest(nextProps.state)
     }
   }
